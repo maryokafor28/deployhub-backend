@@ -3,12 +3,13 @@ import {
   httpRequestErrors,
   httpRequestDuration,
   httpRequestTotal,
-} from "../config/metrics.js";
+} from "../config/metrics";
 
 export interface MetricsSummary {
   totalRequests: number;
   totalErrors: number;
   avgResponseTime: number;
+  uptime: number;
   rawMetrics: string;
 }
 
@@ -55,13 +56,17 @@ export const metricsService = {
       avgResponseTime = countValue > 0 ? sumValue / countValue : 0;
     } catch (error) {
       // If metric access fails, log and return zeros
-      console.error("Failed to fetch metrics:", error);
+      console.error(
+        "Failed to fetch metrics:",
+        error instanceof Error ? error.message : error
+      );
     }
 
     return {
       totalRequests,
       totalErrors,
       avgResponseTime,
+      uptime: process.uptime(), // seconds since process started
       rawMetrics: metrics,
     };
   },

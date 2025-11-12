@@ -1,6 +1,6 @@
-import { metricsService } from "./metricsService.js";
-import { env } from "../config/env.js";
-import { logger } from "../config/logger.js";
+import { metricsService } from "./metricsService";
+import { env } from "../config/env";
+import { logger } from "../config/logger";
 
 interface HealthCheckResponse {
   status: "healthy" | "degraded" | "unhealthy";

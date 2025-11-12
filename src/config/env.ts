@@ -23,30 +23,14 @@ export const env = {
   },
 
   // Environment Helpers (computed properties)
-  isDevelopment: process.env.NODE_ENV === "development",
+  isDevelopment: (process.env.NODE_ENV || "development") === "development",
   isProduction: process.env.NODE_ENV === "production",
   isTest: process.env.NODE_ENV === "test",
 } as const;
 
-// Validate required environment variables
-function validateEnv() {
-  const required: (keyof typeof process.env)[] = ["PORT", "NODE_ENV"];
-
-  const missing = required.filter((key) => !process.env[key]);
-
-  if (missing.length > 0) {
-    throw new Error(
-      `Missing required environment variables: ${missing.join(", ")}`
-    );
-  }
-}
-
-// Run validation
-validateEnv();
-
 // Export for logging/debugging purposes
 export const logEnvConfig = () => {
-  console.log(" Environment Configuration:");
+  console.log("🔧 Environment Configuration:");
   console.log("  Port:", env.port);
   console.log("  Environment:", env.nodeEnv);
   console.log("  Log Level:", env.logLevel);

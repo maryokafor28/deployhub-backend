@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
-import { healthService } from "../services/healthService.js";
-import { logger } from "../config/logger.js";
+import { healthService } from "../services/healthService";
+import { logger } from "../config/logger";
 
 export const healthController = {
   /**
@@ -21,7 +21,7 @@ export const healthController = {
 
       res.status(httpStatus).json(healthCheck);
     } catch (error) {
-      logger.error("Health check failed", { error });
+      logger.error(`Health check failed:$ { error }`);
       next(error);
     }
   },
@@ -68,7 +68,7 @@ export const healthController = {
         });
       }
     } catch (error) {
-      logger.error("Readiness check failed", { error });
+      logger.error(`Readiness check failed:$ { error }`);
       next(error);
     }
   },
