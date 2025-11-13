@@ -1,4 +1,4 @@
-name: CI Pipeline for Metric & Health Services
+name: CI/CD Pipeline for Metric & Health Services
 
 on:
   push:
