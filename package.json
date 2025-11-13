@@ -9,6 +9,7 @@
     "test": "jest",
     "test:coverage": "jest --coverage",
     "test:watch": "jest --watch",
+    "test:integration": "jest tests/integration --runInBand",
     "lint": "eslint . --ext .ts"
   },
   "keywords": [],

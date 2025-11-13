@@ -1,12 +1,14 @@
 import { Request, Response } from "express";
-import { register } from "../config/metrics";
 import { metricsService } from "../services/metricsService";
 import { logger } from "../config/logger";
 
 export const getMetrics = async (_req: Request, res: Response) => {
   try {
-    res.setHeader("Content-Type", register.contentType);
-    res.end(await register.metrics());
+    const rawMetrics = await metricsService.getRawMetrics();
+    const contentType = metricsService.getContentType();
+
+    res.setHeader("Content-Type", contentType);
+    res.end(rawMetrics);
   } catch (error) {
     logger.error(`Error fetching metrics: ${error}`);
     res
@@ -27,6 +29,6 @@ export const getMetricsSummary = async (_req: Request, res: Response) => {
     logger.error(`Error summarizing metrics: ${error}`);
     res
       .status(500)
-      .json({ success: false, message: "Error summarizing metrics" }); // Fixed message
+      .json({ success: false, message: "Error summarizing metrics" });
   }
 };
