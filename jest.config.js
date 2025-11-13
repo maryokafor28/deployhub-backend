@@ -21,4 +21,12 @@ module.exports = {
   coverageReporters: ["text", "lcov", "html"],
   // setupFilesAfterEnv: ["<rootDir>/src/tests/setup/dbSetup.ts"],
   testTimeout: 30000, // 30 seconds for database operations
+  coverageThreshold: {
+    global: {
+      branches: 70,
+      functions: 70,
+      lines: 70,
+      statements: 70,
+    },
+  },
 };
