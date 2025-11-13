@@ -7,7 +7,7 @@ export const healthController = {
    * GET /api/health
    * Comprehensive health check with metrics
    */
-  getHealth: async (req: Request, res: Response, next: NextFunction) => {
+  getHealth: async (_req: Request, res: Response, next: NextFunction) => {
     try {
       const healthCheck = await healthService.check();
 
@@ -31,7 +31,7 @@ export const healthController = {
    * Liveness probe - checks if app is running
    * Used by load balancers/K8s to know if container is alive
    */
-  getLiveness: (req: Request, res: Response) => {
+  getLiveness: (_req: Request, res: Response) => {
     const isAlive = healthService.isAlive();
 
     if (isAlive) {
@@ -52,7 +52,7 @@ export const healthController = {
    * Readiness probe - checks if app can handle requests
    * Used by load balancers/K8s to know if container is ready for traffic
    */
-  getReadiness: async (req: Request, res: Response, next: NextFunction) => {
+  getReadiness: async (_req: Request, res: Response, next: NextFunction) => {
     try {
       const isReady = await healthService.isReady();
 
