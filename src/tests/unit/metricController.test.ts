@@ -1,15 +1,10 @@
 import { Request, Response } from "express";
 
 // Mock dependencies BEFORE importing the controller
-jest.mock("../../config/metrics.ts", () => ({
-  register: {
-    metrics: jest.fn(),
-    contentType: "text/plain",
-  },
-}));
-
-jest.mock("../../services/metricsService.ts", () => ({
+jest.mock("../../services/metricsService", () => ({
   metricsService: {
+    getRawMetrics: jest.fn(),
+    getContentType: jest.fn(),
     getSummary: jest.fn(),
   },
 }));
@@ -26,7 +21,6 @@ import {
   getMetrics,
   getMetricsSummary,
 } from "../../controller/metricsController";
-import { register } from "../../config/metrics";
 import { metricsService } from "../../services/metricsService";
 import { logger } from "../../config/logger";
 
@@ -47,13 +41,18 @@ describe("metricsController", () => {
 
   describe("getMetrics()", () => {
     it("should return metrics text", async () => {
-      (register.metrics as jest.Mock).mockResolvedValue("mocked_metrics");
+      (metricsService.getRawMetrics as jest.Mock).mockResolvedValue(
+        "mocked_metrics"
+      );
+      (metricsService.getContentType as jest.Mock).mockReturnValue(
+        "text/plain; version=0.0.4"
+      );
 
       await getMetrics(mockReq as Request, mockRes as Response);
 
       expect(mockRes.setHeader).toHaveBeenCalledWith(
         "Content-Type",
-        "text/plain"
+        "text/plain; version=0.0.4"
       );
       expect(mockRes.end).toHaveBeenCalledWith("mocked_metrics");
       expect(logger.error).not.toHaveBeenCalled();
@@ -61,7 +60,10 @@ describe("metricsController", () => {
 
     it("should handle error in getMetrics()", async () => {
       const mockError = new Error("fail");
-      (register.metrics as jest.Mock).mockRejectedValue(mockError);
+      (metricsService.getRawMetrics as jest.Mock).mockRejectedValue(mockError);
+      (metricsService.getContentType as jest.Mock).mockReturnValue(
+        "text/plain"
+      );
 
       await getMetrics(mockReq as Request, mockRes as Response);
 
