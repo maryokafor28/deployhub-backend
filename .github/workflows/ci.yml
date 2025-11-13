@@ -156,9 +156,9 @@ jobs:
           echo " CI Pipeline Summary"
           echo "================================"
           echo "✅ Lint & Type Check: ${{ needs.lint-and-typecheck.result }}"
-          echo "Unit Tests: ${{ needs.test-services.result }}"
-          echo "Build: ${{ needs.build.result }}"
-          echo "Deploy: ${{ needs.deploy.result }}"
+          echo "✅ Unit Tests: ${{ needs.test-services.result }}"
+          echo "✅ Build: ${{ needs.build.result }}"
+          echo "🚀 Deploy: ${{ needs.deploy.result }}"
 
           echo "================================"
 
@@ -169,6 +169,10 @@ jobs:
             exit 1
           else
             echo "✅ All checks passed!"
+                      # Note: Deploy might be skipped on PRs, that's okay
+          if [ "${{ needs.deploy.result }}" == "success" ]; then
+            echo "🎉 Deployment successful!"
+
           fi
 deploy:
   name: Deploy to Render
@@ -177,11 +181,29 @@ deploy:
   if: github.ref == 'refs/heads/main' && github.event_name == 'push'
 
   steps:
-    - name: Deploy to Render
+    - name: Trigger Render Deployment
       env:
         RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
         RENDER_SERVICE_ID: ${{ secrets.RENDER_SERVICE_ID }}
       run: |
-        curl -X POST \
+        echo "🚀 Triggering deployment to Render..."
+
+        response=$(curl -X POST \
           "https://api.render.com/v1/services/${RENDER_SERVICE_ID}/deploys" \
-          -H "Authorization: Bearer ${RENDER_API_KEY}"
+          -H "Authorization: Bearer ${RENDER_API_KEY}" \
+          -H "Content-Type: application/json" \
+          -w "\n%{http_code}" \
+          -s)
+
+        http_code=$(echo "$response" | tail -n1)
+        body=$(echo "$response" | sed '$d')
+
+        echo "Response: $body"
+
+        if [ "$http_code" -ge 200 ] && [ "$http_code" -lt 300 ]; then
+          echo "✅ Deployment triggered successfully!"
+          echo "Check status at: https://dashboard.render.com"
+        else
+          echo "❌ Deployment failed with HTTP status: $http_code"
+          exit 1
+        fi
