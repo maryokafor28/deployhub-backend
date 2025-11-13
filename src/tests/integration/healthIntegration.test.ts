@@ -15,7 +15,7 @@ beforeAll(() => {
   app.get("/api/health/ready", healthController.getReadiness);
 });
 
-describe("🔹 Health Controller Integration Tests", () => {
+describe(" Health Controller Integration Tests", () => {
   describe("GET /api/health", () => {
     it("should return a valid health status with metrics", async () => {
       const response = await request(app).get("/api/health");

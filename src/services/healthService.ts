@@ -75,6 +75,6 @@ export const healthService = {
    * Readiness check (add DB/external service checks here)
    */
   isReady: async (): Promise<boolean> => {
-    return true; // For now, always ready
+    return true;
   },
 };

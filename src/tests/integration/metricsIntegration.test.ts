@@ -10,7 +10,7 @@ const app = express();
 app.get("/api/metrics", getMetrics);
 app.get("/api/metrics/summary", getMetricsSummary);
 
-describe("📊 Metrics Controller Integration Tests", () => {
+describe(" Metrics Controller Integration Tests", () => {
   afterEach(() => {
     jest.restoreAllMocks();
   });
