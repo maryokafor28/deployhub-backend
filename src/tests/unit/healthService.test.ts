@@ -1,6 +1,5 @@
 import { healthService } from "../../services/healthService";
 import { metricsService } from "../../services/metricsService";
-import { env } from "../../config/env";
 import { logger } from "../../config/logger";
 
 // Mock dependencies
