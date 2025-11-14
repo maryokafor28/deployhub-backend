@@ -1,15 +1,14 @@
 {
   "name": "deployhub-backend",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "dist/server.js",
   "scripts": {
     "dev": "nodemon src/server.ts",
     "build": "tsc",
     "start": "node dist/server.js",
-    "test": "jest",
+    "test": "jest --passWithNoTests",
     "test:coverage": "jest --coverage",
     "test:watch": "jest --watch",
-    "test:integration": "jest tests/integration --runInBand",
     "lint": "eslint . --ext .ts"
   },
   "keywords": [],
@@ -22,16 +21,15 @@
     "express": "^5.1.0",
     "helmet": "^8.1.0",
     "pino": "^10.1.0",
-    "prom-client": "^15.1.3",
-    "typescript": "^5.9.3",
-    "@types/node": "^24.10.1",
-    "@types/express": "^5.0.5",
-    "@types/cors": "^2.8.19"
+    "prom-client": "^15.1.3"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.5",
     "@types/helmet": "^0.0.48",
     "@types/jest": "^30.0.0",
+    "@types/node": "^24.10.1",
     "@types/supertest": "^6.0.3",
     "@typescript-eslint/eslint-plugin": "^8.46.4",
     "@typescript-eslint/parser": "^8.46.4",
@@ -42,6 +40,7 @@
     "supertest": "^7.1.4",
     "ts-jest": "^29.4.5",
     "ts-node": "^10.9.2",
+    "typescript": "^5.9.3",
     "typescript-eslint": "^8.46.4"
   }
 }

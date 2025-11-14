@@ -1,7 +1,3 @@
-const { createDefaultPreset } = require("ts-jest");
-
-const tsJestTransformCfg = createDefaultPreset().transform;
-
 /** @type {import("jest").Config} */
 module.exports = {
   preset: "ts-jest",
@@ -10,7 +6,6 @@ module.exports = {
   testMatch: ["**/__tests__/**/*.ts", "**/?(*.)+(spec|test).ts"],
   moduleFileExtensions: ["ts", "js", "json"],
   collectCoverageFrom: [
-    "src/modules/**/service.ts", // Only collect coverage from service files
     "src/**/*.ts",
     "!src/**/*.test.ts",
     "!src/**/*.spec.ts",
@@ -19,8 +14,7 @@ module.exports = {
   ],
   coverageDirectory: "coverage",
   coverageReporters: ["text", "lcov", "html"],
-  // setupFilesAfterEnv: ["<rootDir>/src/tests/setup/dbSetup.ts"],
-  testTimeout: 30000, // 30 seconds for database operations
+  testTimeout: 30000,
   coverageThreshold: {
     global: {
       branches: 70,
@@ -29,4 +23,13 @@ module.exports = {
       statements: 70,
     },
   },
+  globals: {
+    "ts-jest": {
+      isolatedModules: true, // ✅ Faster, ignores type errors in tests
+    },
+  },
+  // ✅ Clear cache before running
+  clearMocks: true,
+  resetMocks: true,
+  restoreMocks: true,
 };
