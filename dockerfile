@@ -1,39 +1,62 @@
-# Stage 1 — Build stage
-FROM node:20-alpine AS builder
-WORKDIR /app
+# syntax=docker/dockerfile:1
 
-# Install dependencies
-COPY package*.json tsconfig*.json ./
-RUN npm ci
+ARG NODE_VERSION=22.14.0
 
-# Copy source code and build
+################################################################################
+# Use node image for base image for all stages.
+FROM node:${NODE_VERSION}-alpine as base
+
+# Set working directory for all build stages.
+WORKDIR /usr/src/app
+
+################################################################################
+# Create a stage for installing production dependencies.
+FROM base as deps
+
+# Download dependencies as a separate step to take advantage of Docker's caching.
+RUN --mount=type=bind,source=package.json,target=package.json \
+    --mount=type=bind,source=package-lock.json,target=package-lock.json \
+    --mount=type=cache,target=/root/.npm \
+    npm ci --omit=dev
+
+################################################################################
+# Create a stage for building the application.
+FROM deps as build
+
+# Download additional development dependencies before building
+RUN --mount=type=bind,source=package.json,target=package.json \
+    --mount=type=bind,source=package-lock.json,target=package-lock.json \
+    --mount=type=cache,target=/root/.npm \
+    npm ci
+
+# Copy the rest of the source files into the image.
 COPY . .
-RUN npm run build  # should compile TypeScript into dist/
 
-# Stage 2 — Runtime stage
-FROM node:20-alpine
-WORKDIR /app
+# Run the build script (compiles TypeScript to dist/)
+RUN npm run build
 
-# Install wget for healthcheck
-RUN apk add --no-cache wget
+################################################################################
+# Create a new stage to run the application with minimal runtime dependencies
+FROM base as final
 
-# Install only production dependencies
-COPY package*.json ./
-RUN npm ci --omit=dev
-
-# Copy built output from builder
-COPY --from=builder /app/dist ./dist
-
-# Security best practice: create non-root user
-RUN addgroup -S app && adduser -S app -G app
-RUN chown -R app:app /app
-USER app
-
+# Use production node environment by default.
 ENV NODE_ENV=production
 ENV PORT=4000
 
-EXPOSE 4000
-HEALTHCHECK --interval=30s --timeout=5s --start-period=40s \
-  CMD wget --no-verbose --tries=1 --spider http://localhost:4000/api/health || exit 1
+# Run the application as a non-root user.
+USER node
 
+# Copy package.json so that package manager commands can be used.
+COPY package.json .
+
+# Copy the production dependencies from the deps stage
+COPY --from=deps /usr/src/app/node_modules ./node_modules
+
+# Copy the built application from the build stage (THIS WAS THE BUG!)
+COPY --from=build /usr/src/app/dist ./dist
+
+# Expose the port that the application listens on.
+EXPOSE 4000
+
+# Run the application (point to compiled JS file)
 CMD ["node", "dist/server.js"]

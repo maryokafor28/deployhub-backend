@@ -13,7 +13,16 @@ export const app = express();
 
 // Security and core middlewares
 app.use(helmet());
-app.use(cors());
+app.use(
+  cors({
+    origin: [
+      "http://localhost:5173", // local Vite dev
+      "https://deployhub-frontend-psi.vercel.app", // new Vercel frontend
+    ],
+    credentials: true, // if you need cookies/auth headers
+  })
+);
+
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 
