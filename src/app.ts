@@ -17,7 +17,7 @@ app.use(
   cors({
     origin: [
       "http://localhost:5173", // local Vite dev
-      "https://deployhub-frontend-psi.vercel.app", // new Vercel frontend
+      "https://deployhub-frontend-psi.vercel.app",
     ],
     credentials: true, // if you need cookies/auth headers
   })

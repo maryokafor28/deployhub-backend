@@ -48,11 +48,12 @@ export const trackMetrics = (
 
   res.on("finish", () => {
     const duration = (Date.now() - start) / 1000;
-    const route = req.route?.path || req.path;
+    const routePath =
+      req.baseUrl + (req.route?.path === "/" ? "" : req.route?.path || "");
 
     const labels = {
       method: req.method,
-      route: route || "unknown",
+      route: routePath || "unknown",
       status_code: res.statusCode.toString(), // Ensure string for prom-client
     };
 
