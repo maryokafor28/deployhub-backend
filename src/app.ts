@@ -21,6 +21,21 @@ app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 app.use(requestLogger);
 app.use(trackMetrics);
 
+// Root route - Welcome message
+app.get("/", (req: Request, res: Response) => {
+  res.json({
+    status: "success",
+    message: "DeployHub Backend API",
+    version: "1.0.0",
+    endpoints: {
+      health: "/api/health",
+      metrics: "/api/metrics",
+    },
+    timestamp: new Date().toISOString(),
+    environment: env.nodeEnv,
+  });
+});
+
 // API routes
 app.use("/api/health", healthRoutes);
 app.use("/api/metrics", metricsRoutes);
@@ -32,6 +47,7 @@ app.use((req: Request, res: Response) => {
     status: "error",
     message: "Route not found",
     path: req.originalUrl,
+    availableEndpoints: ["/", "/api/health", "/api/metrics"],
   });
 });
 
