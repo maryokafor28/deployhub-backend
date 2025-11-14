@@ -22,7 +22,7 @@ app.use(requestLogger);
 app.use(trackMetrics);
 
 // Root route - Welcome message
-app.get("/", (req: Request, res: Response) => {
+app.get("/", (_req: Request, res: Response) => {
   res.json({
     status: "success",
     message: "DeployHub Backend API",
