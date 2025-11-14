@@ -27,6 +27,8 @@
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
 
+    "types": ["node", "express", "cors"],
+
     // Other
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
