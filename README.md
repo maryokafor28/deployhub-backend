@@ -1,6 +1,6 @@
 # DeployHub Backend
 
-> A production-ready Node.js backend service with CI/CD automation, comprehensive observability, and Docker containerization.
+A production-ready Node.js backend service with CI/CD automation, comprehensive observability, and Docker containerization.
 
 [![CI/CD Pipeline](https://github.com/maryokafor28/deployhub-backend/actions/workflows/deploy.yml/badge.svg)](https://github.com/maryokafor28/deployhub-backend/actions)
 [![Deployed on Render](https://img.shields.io/badge/Deployed%20on-Render-46E3B7)](https://deployhub-backend-s6p2.onrender.com)
